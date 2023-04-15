@@ -40,26 +40,18 @@ After installing npm packages, the application will be invoked by using the foll
 npm start
 ```
 
-#### Walkthrough Video
 
-[Click me to see the demo video!](https://www.awesomescreenshot.com/video/8271915?key=4160443a4094cf7c0af7d25991652853)
 
-#### Insomnia Screenshot
 
-![Screenshot](./screenshot/insomnia.png)
 
-## License
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) <br>
-This project is licensed under MIT, for more information please visit [this website](https://opensource.org/licenses/MIT)
 
 ## Contribution
 
-Made by Wenwen Tian
+Made by Aaron Kennebrew
 
 ## Questions?
 
 Please feel free to contact me if you need any further information:
 
-- [Email](mailto:wwtian9@gmail.com)
-- [Github Profile](https://github.com/joce1ynn)
+- [Email](ak3technology@gmail.com)
+- [Github Profile](https://github.com/aaronken3)
