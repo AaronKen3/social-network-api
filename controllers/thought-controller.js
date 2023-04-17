@@ -39,25 +39,38 @@ const thoughtController = {
 
   // create Thought
   // push the created thought's _id to the associated user's thoughts array field
-  createThought({ params, body }, res) {
-    Thought.create(body)
-      .then(({ _id }) => {
-        return User.findOneAndUpdate(
-          { _id: body.userId },
-          { $push: { thoughts: _id } },
-          { new: true }
-        );
-      })
-      .then((dbUserData) => {
-        if (!dbUserData) {
-          return res
-            .status(404)
-            .json({ message: "Thought created but no user with this id!" });
-        }
-
-        res.json({ message: "Thought successfully created!" });
-      })
-      .catch((err) => res.json(err));
+  // refacted to use async/await with tutor because I was getting an error
+  createThought: async function ({ params, body }, res) {
+    try {
+      console.log(body);
+      const newThought = await Thought.create(body);
+      const userData = await User.findOneAndUpdate({ username: newThought.username }, { $addToSet: { thoughts: newThought._id } }, { new: true });
+      console.log(userData);
+      if (!userData) {
+        return res.status(404).json({ message: "Thought created but no user with this id!" });
+      } else {
+        res.status(200).json({ message: "Thought successfully created!" });
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+    // Thought.create(body)
+    //   .then(({ _id }) => {
+    //     return User.findOneAndUpdate(
+    //       { _id: body.userId },
+    //       { $push: { thoughts: _id } },
+    //       { new: true }
+    //     );
+    //   })
+    //   .then((dbUserData) => {
+    //     if (!dbUserData) {
+    //       return res
+    //         .status(404)
+    //         .json({ message: "Thought created but no user with this id!" });
+    //     }
+    //     res.json({ message: "Thought successfully created!" });
+    //   })
+    //   .catch((err) => res.json(err));
   },
 
   // update Thought by id
@@ -93,9 +106,7 @@ const thoughtController = {
       })
       .then((dbUserData) => {
         if (!dbUserData) {
-          return res
-            .status(404)
-            .json({ message: "Thought created but no user with this id!" });
+          return res.status(404).json({ message: "Thought created but no user with this id!" });
         }
         res.json({ message: "Thought successfully deleted!" });
       })
@@ -104,11 +115,7 @@ const thoughtController = {
 
   // add reaction
   addReaction({ params, body }, res) {
-    Thought.findOneAndUpdate(
-      { _id: params.thoughtId },
-      { $addToSet: { reactions: body } },
-      { new: true, runValidators: true }
-    )
+    Thought.findOneAndUpdate({ _id: params.thoughtId }, { $addToSet: { reactions: body } }, { new: true, runValidators: true })
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
           res.status(404).json({ message: "No thought with this id" });
@@ -121,11 +128,7 @@ const thoughtController = {
 
   // delete reaction
   removeReaction({ params }, res) {
-    Thought.findOneAndUpdate(
-      { _id: params.thoughtId },
-      { $pull: { reactions: { reactionId: params.reactionId } } },
-      { new: true }
-    )
+    Thought.findOneAndUpdate({ _id: params.thoughtId }, { $pull: { reactions: { reactionId: params.reactionId } } }, { new: true })
       .then((dbThoughtData) => res.json(dbThoughtData))
       .catch((err) => res.json(err));
   },
